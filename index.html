@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexaria - Math Puzzle Game</title>
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,10 90,30 90,70 50,90 10,70 10,30' fill='%236366f1'/></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-container">
+            <h1 class="game-title-welcome">⬡ Hexaria</h1>
+            <p class="subtitle">A Multiplayer Math Puzzle Game</p>
+            
+            <div class="welcome-content">
+                <div class="welcome-form">
+                    <h2>Game Setup</h2>
+                    
+                    <!-- Opponent Selection -->
+                    <div class="form-group">
+                        <label>Choose Opponent:</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="opponent" value="player2" checked>
+                                <span>Player 2</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="opponent" value="bot">
+                                <span>Bot</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Player Names -->
+                    <div class="form-group">
+                        <label for="player1Name">Player 1 Name (Red):</label>
+                        <input type="text" id="player1Name" placeholder="Enter Player 1 name" maxlength="20">
+                    </div>
+                    
+                    <div class="form-group" id="player2NameGroup">
+                        <label for="player2Name">Player 2 Name (Blue):</label>
+                        <input type="text" id="player2Name" placeholder="Enter Player 2 name" maxlength="20">
+                    </div>
+                    
+                    <!-- Level Selection -->
+                    <div class="form-group">
+                        <label>Select Level:</label>
+                        <div class="level-buttons">
+                            <button type="button" class="level-btn" data-level="easy">Easy (4 disabled)</button>
+                            <button type="button" class="level-btn" data-level="medium">Medium (6 disabled)</button>
+                            <button type="button" class="level-btn" data-level="hard">Hard (8 disabled)</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Start Button -->
+                    <button id="playGameBtn" class="play-btn" disabled>Play Game</button>
+                </div>
+                
+                <!-- Game Instructions -->
+                <div class="instructions">
+                    <h2>How to Play</h2>
+                    <div class="instruction-item">
+                        <span class="instruction-number">1</span>
+                        <p>Players take turns placing hexagons with random numbers (1-20) on the board.</p>
+                    </div>
+                    <div class="instruction-item">
+                        <span class="instruction-number">2</span>
+                        <p>Red player goes first, then blue player alternates.</p>
+                    </div>
+                    <div class="instruction-item">
+                        <span class="instruction-number">3</span>
+                        <p><strong>Capture:</strong> Place a hexagon adjacent to an opponent's hexagon with a higher value to take it over!</p>
+                    </div>
+                    <div class="instruction-item">
+                        <span class="instruction-number">4</span>
+                        <p><strong>Boost:</strong> Place adjacent to your own color to increase its value by 1.</p>
+                    </div>
+                    <div class="instruction-item">
+                        <span class="instruction-number">5</span>
+                        <p>Score is the sum of all your hexagon values. Highest score wins!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Screen -->
+    <div id="gameScreen" class="game-screen hidden">
+        <h1 class="game-title">⬡ Hexaria</h1>
+        
+        <div class="game-container">
+            <!-- Game Board Section -->
+            <div class="board-section">
+                <!-- Player Info -->
+                <div class="players-info">
+                    <div class="player-card player-red">
+                        <div class="player-color-indicator"></div>
+                        <div class="player-details">
+                            <h3 id="player1NameDisplay">Player 1</h3>
+                            <p class="score">Score: <span id="player1Score">0</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="current-turn">
+                        <p>Current Hexagon:</p>
+                        <div id="currentHexagon" class="current-hex">
+                            <span id="currentHexValue">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="player-card player-blue">
+                        <div class="player-color-indicator"></div>
+                        <div class="player-details">
+                            <h3 id="player2NameDisplay">Player 2</h3>
+                            <p class="score">Score: <span id="player2Score">0</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hexagon Board -->
+                <div id="hexBoard" class="hex-board"></div>
+                
+                <!-- New Game Button -->
+                <button id="newGameBtn" class="new-game-btn">New Game</button>
+            </div>
+            
+            <!-- Leaderboard Section -->
+            <div class="leaderboard-section">
+                <h2>Leaderboard</h2>
+                <div class="sort-controls">
+                    <label>Sort by:</label>
+                    <select id="sortSelect">
+                        <option value="date">Date (Newest First)</option>
+                        <option value="score">Score (Highest First)</option>
+                    </select>
+                </div>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <p class="no-games">No games played yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Over Modal -->
+    <div id="gameOverModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 Game Over!</h2>
+            <div id="winnerInfo" class="winner-info"></div>
+            <button id="restartBtn" class="restart-btn">Play Again</button>
+        </div>
+    </div>
+    
+    <!-- Game Details Modal -->
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal" id="closeDetailsBtn">&times;</button>
+            <h2>Game Details</h2>
+            <div id="gameDetailsContent" class="game-details-content"></div>
+        </div>
+    </div>
+    
+    <!-- Audio Element for Sound Effects -->
+    <audio id="placeSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==" type="audio/wav">
+    </audio>
+    
+    <script src="script.js"></script>
+</body>
+</html>

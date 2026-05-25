@@ -275,9 +275,9 @@ function generateNewHexagon() {
 
     // Update current hexagon color
     if (gameState.currentPlayer === 'red') {
-        currentHexagon.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a6f)';
+        currentHexagon.style.background = '#ef4444';
     } else {
-        currentHexagon.style.background = 'linear-gradient(135deg, #4ecdc4, #44a3d5)';
+        currentHexagon.style.background = '#3b82f6';
     }
 }
 

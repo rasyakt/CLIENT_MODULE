@@ -1,28 +1,19 @@
-/**
- * Hexaria - Multiplayer Math Puzzle Game
- * LKS Jabar 2023 Web Technologies
- */
 
-// ===========================
-// Game State Variables
-// ===========================
+
 let gameState = {
-    board: [], // 10x8 grid of hexagons
-    currentPlayer: 'red', // 'red' or 'blue'
+    board: [], 
+    currentPlayer: 'red', 
     currentNumber: 0,
     player1Name: '',
     player2Name: '',
     isBot: false,
-    level: null, // 'easy', 'medium', 'hard'
+    level: null, 
     disabledCount: 0,
     scores: { red: 0, blue: 0 },
     gameOver: false,
     moveCount: 0
 };
 
-// ===========================
-// DOM Elements
-// ===========================
 const welcomeScreen = document.getElementById('welcomeScreen');
 const gameScreen = document.getElementById('gameScreen');
 const hexBoard = document.getElementById('hexBoard');
@@ -49,19 +40,13 @@ const closeDetailsBtn = document.getElementById('closeDetailsBtn');
 const gameDetailsContent = document.getElementById('gameDetailsContent');
 const placeSound = document.getElementById('placeSound');
 
-// ===========================
-// Initialization
-// ===========================
 document.addEventListener('DOMContentLoaded', () => {
     initializeWelcomeScreen();
     loadLeaderboard();
 });
 
-/**
- * Initialize welcome screen event listeners
- */
 function initializeWelcomeScreen() {
-    // Opponent selection
+    
     opponentRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
             if (e.target.value === 'bot') {
@@ -75,7 +60,7 @@ function initializeWelcomeScreen() {
         });
     });
 
-    // Level selection
+    
     levelButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             levelButtons.forEach(b => b.classList.remove('active'));
@@ -85,38 +70,35 @@ function initializeWelcomeScreen() {
         });
     });
 
-    // Name inputs
+    
     player1NameInput.addEventListener('input', validateForm);
     player2NameInput.addEventListener('input', validateForm);
 
-    // Play game button
+    
     playGameBtn.addEventListener('click', startGame);
 
-    // New game button
+    
     newGameBtn.addEventListener('click', () => {
         welcomeScreen.classList.remove('hidden');
         gameScreen.classList.add('hidden');
         resetForm();
     });
 
-    // Restart button
+    
     restartBtn.addEventListener('click', () => {
         gameOverModal.classList.add('hidden');
         initializeGame();
     });
 
-    // Sort leaderboard
+    
     sortSelect.addEventListener('change', loadLeaderboard);
 
-    // Close details modal
+    
     closeDetailsBtn.addEventListener('click', () => {
         detailsModal.classList.add('hidden');
     });
 }
 
-/**
- * Validate form inputs and enable/disable play button
- */
 function validateForm() {
     const opponent = document.querySelector('input[name="opponent"]:checked').value;
     const player1Valid = player1NameInput.value.trim() !== '';
@@ -126,9 +108,6 @@ function validateForm() {
     playGameBtn.disabled = !(player1Valid && player2Valid && levelValid);
 }
 
-/**
- * Reset form to initial state
- */
 function resetForm() {
     player1NameInput.value = '';
     player2NameInput.value = '';
@@ -139,16 +118,13 @@ function resetForm() {
     validateForm();
 }
 
-/**
- * Start the game
- */
 function startGame() {
     const opponent = document.querySelector('input[name="opponent"]:checked').value;
     gameState.player1Name = player1NameInput.value.trim();
     gameState.player2Name = opponent === 'bot' ? 'Bot' : player2NameInput.value.trim();
     gameState.isBot = opponent === 'bot';
 
-    // Set disabled hexagon count based on level
+    
     switch (gameState.level) {
         case 'easy':
             gameState.disabledCount = 4;
@@ -167,39 +143,33 @@ function startGame() {
     initializeGame();
 }
 
-/**
- * Initialize game board and state
- */
 function initializeGame() {
-    // Reset game state
+    
     gameState.board = [];
     gameState.currentPlayer = 'red';
     gameState.scores = { red: 0, blue: 0 };
     gameState.gameOver = false;
     gameState.moveCount = 0;
 
-    // Update player names
+    
     player1NameDisplay.textContent = gameState.player1Name;
     player2NameDisplay.textContent = gameState.player2Name;
 
-    // Create board
+    
     createBoard();
 
-    // Generate first hexagon
+    
     generateNewHexagon();
 
-    // Update scores
+    
     updateScores();
 }
 
-/**
- * Create the hexagon board (10x8 grid)
- */
 function createBoard() {
     hexBoard.innerHTML = '';
     gameState.board = [];
 
-    // Generate random disabled positions
+    
     const disabledPositions = generateDisabledPositions();
 
     for (let row = 0; row < 8; row++) {
@@ -246,9 +216,6 @@ function createBoard() {
     }
 }
 
-/**
- * Generate random positions for disabled hexagons
- */
 function generateDisabledPositions() {
     const positions = [];
     const totalCells = 80;
@@ -257,7 +224,7 @@ function generateDisabledPositions() {
         const row = Math.floor(Math.random() * 8);
         const col = Math.floor(Math.random() * 10);
 
-        // Check if position already exists
+        
         if (!positions.some(pos => pos.row === row && pos.col === col)) {
             positions.push({ row, col });
         }
@@ -266,14 +233,11 @@ function generateDisabledPositions() {
     return positions;
 }
 
-/**
- * Generate a new random hexagon number (1-20)
- */
 function generateNewHexagon() {
     gameState.currentNumber = Math.floor(Math.random() * 20) + 1;
     currentHexValue.textContent = gameState.currentNumber;
 
-    // Update current hexagon color
+    
     if (gameState.currentPlayer === 'red') {
         currentHexagon.style.background = '#ef4444';
     } else {
@@ -281,72 +245,60 @@ function generateNewHexagon() {
     }
 }
 
-/**
- * Handle hexagon click
- */
 function handleHexagonClick(row, col) {
     if (gameState.gameOver) return;
 
     const cell = gameState.board[row][col];
 
-    // Check if cell is valid for placement
+    
     if (cell.disabled || cell.color !== null) return;
 
-    // Place hexagon
+    
     placeHexagon(row, col);
 }
 
-/**
- * Place hexagon at specified position
- */
 function placeHexagon(row, col) {
     const cell = gameState.board[row][col];
 
-    // Set cell data
+    
     cell.value = gameState.currentNumber;
     cell.color = gameState.currentPlayer;
 
-    // Update visual
+    
     updateHexagonVisual(cell);
 
-    // Play sound effect
+    
     playPlaceSound();
 
-    // Process adjacent hexagons
+    
     processAdjacentHexagons(row, col);
 
-    // Update scores
+    
     updateScores();
 
-    // Check for game over
+    
     if (checkGameOver()) {
         endGame();
         return;
     }
 
-    // Switch player
+    
     switchPlayer();
 
-    // Generate new hexagon
+    
     generateNewHexagon();
 
-    // If bot's turn, make bot move
+    
     if (gameState.isBot && gameState.currentPlayer === 'blue') {
         setTimeout(() => makeBotMove(), 500);
     }
 }
 
-/**
- * Update hexagon visual appearance
- */
 function updateHexagonVisual(cell) {
     cell.element.classList.add('filled', cell.color);
     cell.element.querySelector('.hexagon-content').textContent = cell.value;
 }
 
-/**
- * Process adjacent hexagons for takeover and boost
- */
 function processAdjacentHexagons(row, col) {
     const cell = gameState.board[row][col];
     const adjacent = getAdjacentCells(row, col);
@@ -355,7 +307,7 @@ function processAdjacentHexagons(row, col) {
         if (adjCell.color === null || adjCell.disabled) return;
 
         if (adjCell.color !== cell.color) {
-            // Takeover: if current value is higher
+            
             if (cell.value > adjCell.value) {
                 adjCell.color = cell.color;
                 adjCell.element.classList.remove('red', 'blue');
@@ -365,7 +317,7 @@ function processAdjacentHexagons(row, col) {
                 }, 500);
             }
         } else {
-            // Boost: add 1 to adjacent same color
+            
             adjCell.value += 1;
             adjCell.element.querySelector('.hexagon-content').textContent = adjCell.value;
             adjCell.element.classList.add('animate-boost');
@@ -376,14 +328,11 @@ function processAdjacentHexagons(row, col) {
     });
 }
 
-/**
- * Get adjacent cells (hexagon has 6 neighbors)
- */
 function getAdjacentCells(row, col) {
     const adjacent = [];
     const isEvenRow = row % 2 === 0;
 
-    // Hexagon adjacency depends on whether row is even or odd
+    
     const offsets = isEvenRow
         ? [[-1, -1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0]]
         : [[-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0], [1, 1]];
@@ -400,9 +349,6 @@ function getAdjacentCells(row, col) {
     return adjacent;
 }
 
-/**
- * Handle hexagon hover for preview
- */
 function handleHexagonHover(row, col) {
     if (gameState.gameOver) return;
     if (gameState.isBot && gameState.currentPlayer === 'blue') return;
@@ -410,26 +356,26 @@ function handleHexagonHover(row, col) {
     const cell = gameState.board[row][col];
     if (cell.disabled || cell.color !== null) return;
 
-    // Clear previous preview
+    
     clearHoverPreview();
 
-    // Show preview
+    
     cell.element.classList.add('preview', gameState.currentPlayer);
     cell.element.querySelector('.hexagon-content').textContent = gameState.currentNumber;
 
-    // Show adjacent effects preview
+    
     const adjacent = getAdjacentCells(row, col);
     adjacent.forEach(adjCell => {
         if (adjCell.color === null || adjCell.disabled) return;
 
         if (adjCell.color !== gameState.currentPlayer) {
-            // Show takeover preview
+            
             if (gameState.currentNumber > adjCell.value) {
                 adjCell.element.style.opacity = '0.7';
                 adjCell.element.style.transform = 'scale(0.95)';
             }
         } else {
-            // Show boost preview
+            
             const content = adjCell.element.querySelector('.hexagon-content');
             const originalValue = content.textContent;
             content.textContent = `${adjCell.value}→${adjCell.value + 1}`;
@@ -438,9 +384,6 @@ function handleHexagonHover(row, col) {
     });
 }
 
-/**
- * Clear hover preview
- */
 function clearHoverPreview() {
     gameState.board.forEach(row => {
         row.forEach(cell => {
@@ -451,7 +394,7 @@ function clearHoverPreview() {
                 }
             }
 
-            // Reset adjacent effects
+            
             cell.element.style.opacity = '';
             cell.element.style.transform = '';
             const content = cell.element.querySelector('.hexagon-content');
@@ -463,17 +406,11 @@ function clearHoverPreview() {
     });
 }
 
-/**
- * Switch to next player
- */
 function switchPlayer() {
     gameState.currentPlayer = gameState.currentPlayer === 'red' ? 'blue' : 'red';
     gameState.moveCount++;
 }
 
-/**
- * Update score displays
- */
 function updateScores() {
     let redScore = 0;
     let blueScore = 0;
@@ -495,18 +432,12 @@ function updateScores() {
     player2ScoreDisplay.textContent = blueScore;
 }
 
-/**
- * Check if game is over (no empty hexagons left)
- */
 function checkGameOver() {
     return gameState.board.every(row =>
         row.every(cell => cell.disabled || cell.color !== null)
     );
 }
 
-/**
- * End game and show winner
- */
 function endGame() {
     gameState.gameOver = true;
 
@@ -529,7 +460,7 @@ function endGame() {
         loserScore = blueScore;
     }
 
-    // Display winner info
+    
     winnerInfo.innerHTML = `
         <strong>${winner === 'Draw' ? "It's a Draw!" : winner + ' Wins!'}</strong>
         <p>${gameState.player1Name}: ${redScore} points</p>
@@ -538,13 +469,10 @@ function endGame() {
 
     gameOverModal.classList.remove('hidden');
 
-    // Save to leaderboard
+    
     saveToLeaderboard(winner, winnerScore, loserScore);
 }
 
-/**
- * Save game result to leaderboard (localStorage)
- */
 function saveToLeaderboard(winner, winnerScore, loserScore) {
     const games = JSON.parse(localStorage.getItem('hexariaLeaderboard') || '[]');
 
@@ -567,9 +495,6 @@ function saveToLeaderboard(winner, winnerScore, loserScore) {
     loadLeaderboard();
 }
 
-/**
- * Load and display leaderboard
- */
 function loadLeaderboard() {
     const games = JSON.parse(localStorage.getItem('hexariaLeaderboard') || '[]');
 
@@ -578,7 +503,7 @@ function loadLeaderboard() {
         return;
     }
 
-    // Sort games
+    
     const sortBy = sortSelect.value;
     games.sort((a, b) => {
         if (sortBy === 'score') {
@@ -588,7 +513,7 @@ function loadLeaderboard() {
         }
     });
 
-    // Display games
+    
     leaderboardList.innerHTML = games.map(game => {
         const date = new Date(game.date);
         const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
@@ -610,9 +535,6 @@ function loadLeaderboard() {
     }).join('');
 }
 
-/**
- * Show game details modal
- */
 function showGameDetails(gameId) {
     const games = JSON.parse(localStorage.getItem('hexariaLeaderboard') || '[]');
     const game = games.find(g => g.id === gameId);
@@ -635,13 +557,10 @@ function showGameDetails(gameId) {
     detailsModal.classList.remove('hidden');
 }
 
-/**
- * Bot AI - Make a move
- */
 function makeBotMove() {
     if (gameState.gameOver) return;
 
-    // Show 3 random steps before actual move (imitate human)
+    
     const emptyCells = getEmptyCells();
     if (emptyCells.length === 0) return;
 
@@ -649,7 +568,7 @@ function makeBotMove() {
     const maxSteps = Math.min(3, emptyCells.length);
     const randomSteps = [];
 
-    // Generate random steps
+    
     while (randomSteps.length < maxSteps) {
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         if (!randomSteps.some(s => s.row === randomCell.row && s.col === randomCell.col)) {
@@ -657,7 +576,7 @@ function makeBotMove() {
         }
     }
 
-    // Show steps with animation
+    
     const showStep = () => {
         if (stepCount < randomSteps.length) {
             const step = randomSteps[stepCount];
@@ -669,7 +588,7 @@ function makeBotMove() {
                 showStep();
             }, 1000);
         } else {
-            // Make actual move
+            
             const bestMove = calculateBestMove();
             if (bestMove) {
                 placeHexagon(bestMove.row, bestMove.col);
@@ -680,9 +599,6 @@ function makeBotMove() {
     showStep();
 }
 
-/**
- * Get all empty cells
- */
 function getEmptyCells() {
     const empty = [];
     gameState.board.forEach(row => {
@@ -695,9 +611,6 @@ function getEmptyCells() {
     return empty;
 }
 
-/**
- * Calculate best move for bot (simple AI)
- */
 function calculateBestMove() {
     const emptyCells = getEmptyCells();
     if (emptyCells.length === 0) return null;
@@ -713,17 +626,17 @@ function calculateBestMove() {
             if (adjCell.color === null || adjCell.disabled) return;
 
             if (adjCell.color !== 'blue') {
-                // Can takeover opponent
+                
                 if (gameState.currentNumber > adjCell.value) {
-                    score += adjCell.value + 10; // High priority
+                    score += adjCell.value + 10; 
                 }
             } else {
-                // Can boost own hexagon
+                
                 score += 5;
             }
         });
 
-        // Add randomness
+        
         score += Math.random() * 3;
 
         if (score > bestScore) {
@@ -735,15 +648,11 @@ function calculateBestMove() {
     return bestMove || emptyCells[0];
 }
 
-/**
- * Play sound effect
- */
 function playPlaceSound() {
     placeSound.currentTime = 0;
     placeSound.play().catch(() => {
-        // Ignore errors if sound can't play
+        
     });
 }
 
-// Make showGameDetails available globally
 window.showGameDetails = showGameDetails;

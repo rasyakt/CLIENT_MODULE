@@ -1,6 +1,4 @@
-/* ==========================================================================
-   Hexaria CSS - Minimalist & Flat Design (Solid Colors, No Gradients)
-   ========================================================================== */
+
 
 * {
     margin: 0;
@@ -16,9 +14,6 @@ body {
     overflow-x: hidden;
 }
 
-/* ==========================================================================
-   Welcome Screen
-   ========================================================================== */
 .welcome-screen {
     min-height: 100vh;
     display: flex;
@@ -178,7 +173,6 @@ body {
     cursor: not-allowed;
 }
 
-/* Instructions Section */
 .instructions {
     background-color: #1e293b;
     border: 1px solid #334155;
@@ -226,9 +220,6 @@ body {
     color: #ffffff;
 }
 
-/* ==========================================================================
-   Game Screen
-   ========================================================================== */
 .game-screen {
     min-height: 100vh;
     padding: 20px;
@@ -250,7 +241,6 @@ body {
     margin: 0 auto;
 }
 
-/* Board Section */
 .board-section {
     display: flex;
     flex-direction: column;
@@ -346,7 +336,6 @@ body {
     z-index: 1;
 }
 
-/* Hexagon Board */
 .hex-board {
     display: flex;
     flex-direction: column;
@@ -364,7 +353,7 @@ body {
 }
 
 .hex-row:nth-child(even) {
-    margin-left: 37px; /* 70px/2 + 2px offset gap */
+    margin-left: 37px; 
 }
 
 .hexagon {
@@ -431,7 +420,6 @@ body {
     opacity: 0.6;
 }
 
-/* Hexagon State Animations */
 .hexagon.animate-takeover::before {
     animation: takeover 0.4s ease;
 }
@@ -450,7 +438,6 @@ body {
     50% { transform: scale(1.2); }
 }
 
-/* New Game Button */
 .new-game-btn {
     padding: 12px 24px;
     border: 1px solid #475569;
@@ -470,9 +457,6 @@ body {
     border-color: #64748b;
 }
 
-/* ==========================================================================
-   Leaderboard Section
-   ========================================================================== */
 .leaderboard-section {
     background-color: #1e293b;
     border: 1px solid #334155;
@@ -532,7 +516,6 @@ body {
     padding-right: 4px;
 }
 
-/* Custom Scrollbar for Leaderboard */
 .leaderboard-list::-webkit-scrollbar {
     width: 6px;
 }
@@ -609,9 +592,6 @@ body {
     font-size: 0.95rem;
 }
 
-/* ==========================================================================
-   Modals
-   ========================================================================== */
 .modal {
     position: fixed;
     top: 0;
@@ -719,16 +699,10 @@ body {
     margin-right: 5px;
 }
 
-/* ==========================================================================
-   Utility Classes
-   ========================================================================== */
 .hidden {
     display: none !important;
 }
 
-/* ==========================================================================
-   Animations
-   ========================================================================== */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -745,9 +719,6 @@ body {
     }
 }
 
-/* ==========================================================================
-   Responsive Design
-   ========================================================================== */
 @media (max-width: 1200px) {
     .game-container {
         grid-template-columns: 1fr;
@@ -788,7 +759,7 @@ body {
     }
     
     .hex-row:nth-child(even) {
-        margin-left: 27px; /* 50px/2 + 2px gap */
+        margin-left: 27px; 
     }
     
     .hexagon-content {
